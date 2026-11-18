@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: rohobot
+      POSTGRES_USER: rohobot
+      POSTGRES_PASSWORD: rohobot
+    ports:
+      - "5432:5432"
+    volumes:
+      - rohobot-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rohobot -d rohobot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  rohobot-postgres-data:
