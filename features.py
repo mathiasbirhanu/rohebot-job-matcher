@@ -10,14 +10,18 @@ def make_and_push_commits(num_commits=500, filename="auto_commit.txt", repo_url=
     # 2. Set default branch to main
     subprocess.run(["git", "branch", "-M", "main"], check=True)
 
-    print(f"Starting creation of {num_commits} local commits...")
+    print(f"Starting creation of {num_commits} local commits including all project folders...")
 
     # 3. Create commits in a loop
     for i in range(1, num_commits + 1):
+        # Modify the tracking file to force a change for Git
         with open(filename, "a") as f:
             f.write(f"Automated commit entry #{i}\n")
 
-        subprocess.run(["git", "add", filename], check=True, stdout=subprocess.DEVNULL)
+        # Stage ALL files in the directory (this catches your backend folder, code, etc.)
+        subprocess.run(["git", "add", "."], check=True, stdout=subprocess.DEVNULL)
+        
+        # Commit the changes
         commit_message = f"Auto commit: update #{i}"
         subprocess.run(["git", "commit", "-m", commit_message], check=True, stdout=subprocess.DEVNULL)
 
@@ -36,8 +40,8 @@ def make_and_push_commits(num_commits=500, filename="auto_commit.txt", repo_url=
 
     # 5. Push all commits to GitHub automatically
     print("Pushing commits to GitHub... (You may be prompted for your GitHub credentials/token)")
-    subprocess.run(["git", "push", "-u", "origin", "main"], check=True)
-    print("Successfully pushed all 500 commits to GitHub!")
+    subprocess.run(["git", "push", "-u", "origin", "main", "--force"], check=True)
+    print("Successfully pushed all 500 commits and backend folder to GitHub!")
 
 if __name__ == "__main__":
     make_and_push_commits()
